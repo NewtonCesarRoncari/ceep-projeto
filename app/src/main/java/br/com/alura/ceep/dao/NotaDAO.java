@@ -12,10 +12,7 @@ public class NotaDAO {
     private final static ArrayList<Nota> notas = new ArrayList<>();
 
     public List<Nota> todos() {
-        for (int i = 0; i<10; i++){
-            notas.add(new Nota("Test " + (i + 1), "test " + (i + 1)));
-        }
-        return notas;
+        return (List<Nota>) notas.clone();
     }
 
     public void insere(Nota... notas) {
