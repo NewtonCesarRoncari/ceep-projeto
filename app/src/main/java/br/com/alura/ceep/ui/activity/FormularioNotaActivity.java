@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
+import br.com.alura.ceep.ui.recyclerview.adapter.CoresAdapter;
 
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
@@ -45,6 +47,7 @@ public class FormularioNotaActivity extends AppCompatActivity {
             posicaoRecibida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
             preencheCampos(notaRecebida);
         }
+        configuraRecyclerView();
     }
 
     private void preencheCampos(Nota notaRecebida) {
@@ -88,5 +91,15 @@ public class FormularioNotaActivity extends AppCompatActivity {
 
     private boolean ehMenuSalvaNota(MenuItem item) {
         return item.getItemId() == R.id.menu_formulario_nota_ic_salva;
+    }
+
+    private void configuraAdapter(RecyclerView listaCores) {
+        CoresAdapter adapter = new CoresAdapter(this);
+        listaCores.setAdapter(adapter);
+    }
+
+    private void configuraRecyclerView() {
+        RecyclerView listaCores = findViewById(R.id.cores_notas_recyclerview);
+        configuraAdapter(listaCores);
     }
 }

@@ -2,33 +2,31 @@ package br.com.alura.ceep.ui.recyclerview.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
-import br.com.alura.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
+import br.com.alura.ceep.ui.recyclerview.adapter.listener.OnItemNotaClickListener;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotaViewHolder> {
 
     private final List<Nota> notas;
     private final Context context;
-    private OnItemClickListener onItemClickListener;
+    private OnItemNotaClickListener onItemNotaClickListener;
 
     public ListaNotasAdapter(Context context, List<Nota> notas) {
         this.context = context;
         this.notas = notas;
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void setOnItemNotaClickListener(OnItemNotaClickListener onItemNotaClickListener) {
+        this.onItemNotaClickListener = onItemNotaClickListener;
     }
 
     @Override
@@ -77,7 +75,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onItemClick(nota, getAdapterPosition());
+                    onItemNotaClickListener.onItemClick(nota, getAdapterPosition());
                 }
             });
         }

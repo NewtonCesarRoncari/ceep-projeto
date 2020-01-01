@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NotaDAO;
 import br.com.alura.ceep.model.Nota;
 import br.com.alura.ceep.ui.recyclerview.adapter.ListaNotasAdapter;
-import br.com.alura.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
+import br.com.alura.ceep.ui.recyclerview.adapter.listener.OnItemNotaClickListener;
 import br.com.alura.ceep.ui.recyclerview.helper.callback.NotaItemTouchHelperCallback;
 
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
@@ -63,21 +61,20 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
-
         final MenuItem itemGrid = menu.findItem(R.id.menu_lista_notas_layout_ic_grid);
         final MenuItem itemLinear = menu.findItem(R.id.menu_lista_notas_layout_ic_linear);
 
-        if (!preferences.contains(PREFERENCIA_GRID_LAYOUT)) {
-            configuraLinearLayout(itemGrid, itemLinear);
-        } else {
+        if (preferences.contains(PREFERENCIA_GRID_LAYOUT)) {
             configuraGridLayout(itemGrid, itemLinear);
+        } else {
+            configuraLinearLayout(itemGrid, itemLinear);
         }
 
         itemGrid.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 configuraGridLayout(itemGrid, itemLinear);
-                viewModel.adicionarPreferenceLayout(preferences);
+                viewModel.adicionarPreferenceLayout(preferences, PREFERENCIA_GRID_LAYOUT);
                 return true;
             }
         });
@@ -86,7 +83,7 @@ public class ListaNotasActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 configuraLinearLayout(itemGrid, itemLinear);
-                viewModel.removerPreferenceLayout(preferences);
+                viewModel.removerPreferenceLayout(preferences, PREFERENCIA_GRID_LAYOUT);
                 return true;
             }
         });
@@ -206,7 +203,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     private void configuraAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
         adapter = new ListaNotasAdapter(this, todasNotas);
         listaNotas.setAdapter(adapter);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
+        adapter.setOnItemNotaClickListener(new OnItemNotaClickListener() {
             @Override
             public void onItemClick(Nota nota, int posicao) {
                 vaiParaFormularioNotaActivityAltera(nota, posicao);

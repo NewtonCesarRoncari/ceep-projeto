@@ -4,19 +4,18 @@ import android.content.SharedPreferences;
 
 class ListaNotasViewModel {
 
-    public static final String PREFERENCIA_GRID_LAYOUT = "grid_layout";
+    ListaNotasViewModel() {
+    }
 
-    ListaNotasViewModel() { }
-
-    void adicionarPreferenceLayout(SharedPreferences preferences) {
+    void adicionarPreferenceLayout(SharedPreferences preferences, String chavePreferencia) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(PREFERENCIA_GRID_LAYOUT, true);
+        editor.putBoolean(chavePreferencia, true);
         editor.apply();
     }
 
-    void removerPreferenceLayout(SharedPreferences preferences) {
+    void removerPreferenceLayout(SharedPreferences preferences, String chavePreferencia) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(PREFERENCIA_GRID_LAYOUT);
+        editor.remove(chavePreferencia);
         editor.apply();
     }
 }
