@@ -13,15 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alura.ceep.R;
+import br.com.alura.ceep.model.Cores;
 
 public class CoresAdapter extends RecyclerView.Adapter<CoresAdapter.CorViewHolder> {
 
     private final List<String> cores = new ArrayList<>();
     private final Context context;
+    private CoresAdapter.OnItemClickListener onItemClickListener;
 
     public CoresAdapter(Context context) {
         this.context = context;
         preencheListaCores();
+    }
+
+    public void setOnItemNotaClickListener(CoresAdapter.OnItemClickListener onItemNotaClickListener) {
+        this.onItemClickListener = onItemNotaClickListener;
     }
 
     @Override
@@ -42,15 +48,19 @@ public class CoresAdapter extends RecyclerView.Adapter<CoresAdapter.CorViewHolde
     }
 
     private void preencheListaCores() {
-        cores.add("#408EC9");
-        cores.add("#FFFFFF");
-        cores.add("#EC2F4B");
-        cores.add("#9ACD32");
-        cores.add("#F9F256");
-        cores.add("#F1CBFF");
-        cores.add("#D2D4DC");
-        cores.add("#A47C48");
-        cores.add("#BE29EC");
+        cores.add(Cores.AZUL.getValor());
+        cores.add(Cores.BRANCO.getValor());
+        cores.add(Cores.VERMELHO.getValor());
+        cores.add(Cores.VERDE.getValor());
+        cores.add(Cores.AMARELO.getValor());
+        cores.add(Cores.LILAS.getValor());
+        cores.add(Cores.CINZA.getValor());
+        cores.add(Cores.MARROM.getValor());
+        cores.add(Cores.ROXO.getValor());
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(String cor);
     }
 
     class CorViewHolder extends RecyclerView.ViewHolder {
@@ -60,6 +70,12 @@ public class CoresAdapter extends RecyclerView.Adapter<CoresAdapter.CorViewHolde
         CorViewHolder(View itemView) {
             super(itemView);
             viewCor = itemView.findViewById(R.id.view_cor);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(cores.get(getAdapterPosition()));
+                }
+            });
         }
 
         void vincula(String cor) {
@@ -68,7 +84,6 @@ public class CoresAdapter extends RecyclerView.Adapter<CoresAdapter.CorViewHolde
                 drawable.setTint(Color.parseColor(cor));
             }
         }
-
 
     }
 }

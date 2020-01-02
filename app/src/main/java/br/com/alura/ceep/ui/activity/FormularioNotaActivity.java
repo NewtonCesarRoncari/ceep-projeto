@@ -2,22 +2,22 @@ package br.com.alura.ceep.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.Serializable;
-
 import br.com.alura.ceep.R;
+import br.com.alura.ceep.model.Cores;
 import br.com.alura.ceep.model.Nota;
 import br.com.alura.ceep.ui.recyclerview.adapter.CoresAdapter;
 
+import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_COR_NOTA;
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.POSICAO_INVALIDA;
@@ -30,6 +30,8 @@ public class FormularioNotaActivity extends AppCompatActivity {
     private int posicaoRecibida = POSICAO_INVALIDA;
     private TextView titulo;
     private TextView descricao;
+    private ConstraintLayout formularioLayout;
+    private String corNota = Cores.BRANCO.getValor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +42,29 @@ public class FormularioNotaActivity extends AppCompatActivity {
         inicializaCampos();
 
         Intent dadosRecebidos = getIntent();
-        if(dadosRecebidos.hasExtra(CHAVE_NOTA)){
+        if (dadosRecebidos.hasExtra(CHAVE_NOTA)) {
             setTitle(TITULO_APPBAR_ALTERA);
             Nota notaRecebida = (Nota) dadosRecebidos
                     .getSerializableExtra(CHAVE_NOTA);
             posicaoRecibida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
             preencheCampos(notaRecebida);
         }
+
         configuraRecyclerView();
+        recuperaCorEmCicloDeVida(savedInstanceState);
     }
 
     private void preencheCampos(Nota notaRecebida) {
         titulo.setText(notaRecebida.getTitulo());
         descricao.setText(notaRecebida.getDescricao());
+        formularioLayout.setBackgroundColor(Color.parseColor(notaRecebida.getCor()));
+        this.corNota = notaRecebida.getCor();
     }
 
     private void inicializaCampos() {
         titulo = findViewById(R.id.formulario_nota_titulo);
         descricao = findViewById(R.id.formulario_nota_descricao);
+        formularioLayout = findViewById(R.id.formulario_layout);
     }
 
     @Override
@@ -68,7 +75,7 @@ public class FormularioNotaActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(ehMenuSalvaNota(item)){
+        if (ehMenuSalvaNota(item)) {
             Nota notaCriada = criaNota();
             retornaNota(notaCriada);
             finish();
@@ -80,13 +87,14 @@ public class FormularioNotaActivity extends AppCompatActivity {
         Intent resultadoInsercao = new Intent();
         resultadoInsercao.putExtra(CHAVE_NOTA, nota);
         resultadoInsercao.putExtra(CHAVE_POSICAO, posicaoRecibida);
-        setResult(Activity.RESULT_OK,resultadoInsercao);
+        setResult(Activity.RESULT_OK, resultadoInsercao);
     }
 
     @NonNull
     private Nota criaNota() {
         return new Nota(titulo.getText().toString(),
-                descricao.getText().toString());
+                descricao.getText().toString(),
+                this.corNota);
     }
 
     private boolean ehMenuSalvaNota(MenuItem item) {
@@ -96,10 +104,32 @@ public class FormularioNotaActivity extends AppCompatActivity {
     private void configuraAdapter(RecyclerView listaCores) {
         CoresAdapter adapter = new CoresAdapter(this);
         listaCores.setAdapter(adapter);
+        adapter.setOnItemNotaClickListener(new CoresAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String cor) {
+                formularioLayout.setBackgroundColor(Color.parseColor(cor));
+                corNota = cor;
+            }
+        });
     }
 
     private void configuraRecyclerView() {
         RecyclerView listaCores = findViewById(R.id.cores_notas_recyclerview);
         configuraAdapter(listaCores);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(CHAVE_COR_NOTA, this.corNota);
+    }
+
+    private void recuperaCorEmCicloDeVida(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            formularioLayout.setBackgroundColor(Color.parseColor(
+                    savedInstanceState.getString(CHAVE_COR_NOTA)));
+            this.corNota = savedInstanceState.getString(CHAVE_COR_NOTA);
+        }
     }
 }
