@@ -1,19 +1,19 @@
-package br.com.alura.ceep.ui.activity;
+package br.com.alura.ceep.ui.activity.viewModel;
 
 import android.content.SharedPreferences;
 
-class ListaNotasViewModel {
+public class ListaNotasViewModel {
 
-    ListaNotasViewModel() {
+    public ListaNotasViewModel() {
     }
 
-    void adicionarPreferenceLayout(SharedPreferences preferences, String chavePreferencia) {
+    public void adicionarPreferenceLayout(SharedPreferences preferences, String chavePreferencia) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(chavePreferencia, true);
         editor.apply();
     }
 
-    void removerPreferenceLayout(SharedPreferences preferences, String chavePreferencia) {
+    public void removerPreferenceLayout(SharedPreferences preferences, String chavePreferencia) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(chavePreferencia);
         editor.apply();
