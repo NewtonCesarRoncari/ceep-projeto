@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/formulario_feed_back_banner"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:contentDescription="Feedback Banner"
+            android:scaleType="centerCrop"
+            android:src="@drawable/feedback_banner"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/formulario_feedback_mensagem_banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:drawable/screen_background_dark_transparent"
+            android:padding="8dp"
+            android:text="Deixe o seu feedback! :)"
+            android:textColor="@color/branco"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/formulario_feed_back_banner"
+            app:layout_constraintEnd_toEndOf="@+id/formulario_feed_back_banner"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/formulario_feed_back_banner"
+            app:layout_constraintTop_toTopOf="@+id/formulario_feed_back_banner"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/formulario_feedback_email_inputlayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:theme="@style/Widget.Design.TextInputLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/formulario_feed_back_banner"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/formulario_feedback_email_editext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="E-mail"
+                android:inputType="textEmailAddress" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/formulario_feedback_mensagem_feedback_inputlayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:theme="@style/Widget.Design.TextInputLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/formulario_feedback_email_inputlayout"
+            app:layout_constraintStart_toStartOf="@+id/formulario_feedback_email_inputlayout"
+            app:layout_constraintTop_toBottomOf="@+id/formulario_feedback_email_inputlayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/formulario_feedback_mensagem_feedback_editext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escreva seu feedback" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/formulario_feedback_mensagem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="Envie dúvidas ou sugestão sobresua experiência com o Ceep. Usamos as informações fornecidas para aprimorar a experiência da App"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/formulario_feedback_mensagem_feedback_inputlayout"
+            app:layout_constraintStart_toStartOf="@+id/formulario_feedback_mensagem_feedback_inputlayout"
+            app:layout_constraintTop_toBottomOf="@+id/formulario_feedback_mensagem_feedback_inputlayout"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

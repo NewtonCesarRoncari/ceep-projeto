@@ -41,12 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void configuraTempoSplasScreen(int tempoDaSplashScreen) {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                vaiParaListaNotasActivity();
-            }
-        }, tempoDaSplashScreen);
+        handler.postDelayed(() -> vaiParaListaNotasActivity(), tempoDaSplashScreen);
     }
 
     private void vaiParaListaNotasActivity() {

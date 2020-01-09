@@ -83,6 +83,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(final Menu menu) {
         final MenuItem itemGrid = menu.findItem(R.id.menu_lista_notas_layout_ic_grid);
         final MenuItem itemLinear = menu.findItem(R.id.menu_lista_notas_layout_ic_linear);
+        final MenuItem itemFeedback = menu.findItem(R.id.menu_lista_notas_feedback_formulario);
 
         if (preferences.contains(PREFERENCIA_GRID_LAYOUT)) {
             configuraGridLayout(itemGrid, itemLinear);
@@ -101,6 +102,11 @@ public class ListaNotasActivity extends AppCompatActivity {
             configuraLinearLayout(itemGrid, itemLinear);
             preference.removerPreference(
                     preferences, PREFERENCIA_GRID_LAYOUT);
+            return true;
+        });
+
+        itemFeedback.setOnMenuItemClickListener(menuItem -> {
+            vaiParaFormularioFeedbackActivity();
             return true;
         });
         return super.onPrepareOptionsMenu(menu);
@@ -129,6 +135,13 @@ public class ListaNotasActivity extends AppCompatActivity {
                         FormularioNotaActivity.class);
         startActivityForResult(iniciaFormularioNota,
                 CODIGO_REQUISICAO_INSERE_NOTA);
+    }
+
+    private void vaiParaFormularioFeedbackActivity() {
+        Intent vaiParaFormularioFeedback =
+                new Intent(ListaNotasActivity.this,
+                        FormularioFeedbackActivity.class);
+        startActivity(vaiParaFormularioFeedback);
     }
 
     private List<Nota> pegaTodasNotas() {

@@ -11,4 +11,10 @@
         android:title="Altera Layout"
         android:icon="@drawable/ic_action_grid_layout"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_lista_notas_feedback_formulario"
+        android:icon="@drawable/ic_feedback_layout"
+        android:title="Feedback"
+        app:showAsAction="always" />
 </menu>
