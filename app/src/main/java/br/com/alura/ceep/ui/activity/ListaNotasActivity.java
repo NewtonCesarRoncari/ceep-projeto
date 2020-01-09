@@ -4,24 +4,29 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
 
 import br.com.alura.ceep.R;
-import br.com.alura.ceep.dao.NotaDAO;
+import br.com.alura.ceep.database.ConnectionDatabase;
 import br.com.alura.ceep.model.Nota;
-import br.com.alura.ceep.ui.activity.viewModel.ListaNotasViewModel;
+import br.com.alura.ceep.repository.NotaRepository;
+import br.com.alura.ceep.repository.SharedPreferencesRepository;
 import br.com.alura.ceep.ui.recyclerview.adapter.ListaNotasAdapter;
 import br.com.alura.ceep.ui.recyclerview.helper.callback.NotaItemTouchHelperCallback;
+import br.com.alura.ceep.ui.viewmodel.ListaNotasViewModel;
+import br.com.alura.ceep.ui.viewmodel.factory.ListaNotasViewModelFactory;
 
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static br.com.alura.ceep.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
@@ -37,8 +42,11 @@ public class ListaNotasActivity extends AppCompatActivity {
     public static final String PREFERENCIA_GRID_LAYOUT = "grid_layout";
     private ListaNotasAdapter adapter;
     private RecyclerView listaNotas;
-    private ListaNotasViewModel viewModel = new ListaNotasViewModel();
+    private SharedPreferencesRepository preference = new SharedPreferencesRepository();
     private SharedPreferences preferences;
+    private ConnectionDatabase connectionDatabase;
+    private NotaRepository repository;
+    private ListaNotasViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +55,22 @@ public class ListaNotasActivity extends AppCompatActivity {
 
         setTitle(TITULO_APPBAR);
 
+        this.connectionDatabase = (ConnectionDatabase) ConnectionDatabase.getInstance(this);
+        this.repository = new NotaRepository(connectionDatabase);
+
+        configuraInstanciaViewModel();
+
         this.preferences = getSharedPreferences(NOME_PREFERENCIA, MODE_PRIVATE);
         List<Nota> todasNotas = pegaTodasNotas();
         configuraRecyclerView(todasNotas);
         configuraBotaoInsereNota();
+    }
+
+    private void configuraInstanciaViewModel() {
+        ListaNotasViewModelFactory factory = new ListaNotasViewModelFactory(
+                new NotaRepository(connectionDatabase));
+        ViewModelProvider provider = ViewModelProviders.of(this, factory);
+        this.viewModel = provider.get(ListaNotasViewModel.class);
     }
 
     @Override
@@ -70,22 +90,18 @@ public class ListaNotasActivity extends AppCompatActivity {
             configuraLinearLayout(itemGrid, itemLinear);
         }
 
-        itemGrid.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                configuraGridLayout(itemGrid, itemLinear);
-                viewModel.adicionarPreferenceLayout(preferences, PREFERENCIA_GRID_LAYOUT);
-                return true;
-            }
+        itemGrid.setOnMenuItemClickListener(menuItem -> {
+            configuraGridLayout(itemGrid, itemLinear);
+            preference.adicionarPreference(
+                    preferences, PREFERENCIA_GRID_LAYOUT);
+            return true;
         });
 
-        itemLinear.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                configuraLinearLayout(itemGrid, itemLinear);
-                viewModel.removerPreferenceLayout(preferences, PREFERENCIA_GRID_LAYOUT);
-                return true;
-            }
+        itemLinear.setOnMenuItemClickListener(menuItem -> {
+            configuraLinearLayout(itemGrid, itemLinear);
+            preference.removerPreference(
+                    preferences, PREFERENCIA_GRID_LAYOUT);
+            return true;
         });
         return super.onPrepareOptionsMenu(menu);
     }
@@ -104,12 +120,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private void configuraBotaoInsereNota() {
         TextView botaoInsereNota = findViewById(R.id.lista_notas_insere_nota);
-        botaoInsereNota.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vaiParaFormularioNotaActivityInsere();
-            }
-        });
+        botaoInsereNota.setOnClickListener(view -> vaiParaFormularioNotaActivityInsere());
     }
 
     private void vaiParaFormularioNotaActivityInsere() {
@@ -121,8 +132,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private List<Nota> pegaTodasNotas() {
-        NotaDAO dao = new NotaDAO();
-        return dao.todos();
+        return repository.todos();
     }
 
     @Override
@@ -132,7 +142,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 
             if (resultadoOk(resultCode)) {
                 Nota notaRecebida = (Nota) data.getSerializableExtra(CHAVE_NOTA);
-                adiciona(notaRecebida);
+                insere(notaRecebida);
             }
 
         }
@@ -148,9 +158,9 @@ public class ListaNotasActivity extends AppCompatActivity {
         }
     }
 
-    private void altera(Nota nota, int posicao) {
-        new NotaDAO().altera(posicao, nota);
-        adapter.altera(posicao, nota);
+    private void altera(Nota nota, int posicaoRecebida) {
+        viewModel.altera(nota);
+        adapter.altera(posicaoRecebida, nota);
     }
 
     private boolean ehPosicaoValida(int posicaoRecebida) {
@@ -166,9 +176,9 @@ public class ListaNotasActivity extends AppCompatActivity {
         return requestCode == CODIGO_REQUISICAO_ALTERA_NOTA;
     }
 
-    private void adiciona(Nota nota) {
-        new NotaDAO().insere(nota);
-        adapter.adiciona(nota);
+    private void insere(Nota nota) {
+        viewModel.insere(adapter.adicionaPosicaoNota(nota)).observe(this, notaSalva ->
+                adapter.insere(notaSalva));
     }
 
     private boolean ehResultadoInsereNota(int requestCode, Intent data) {
@@ -196,19 +206,15 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private void configuraItemTouchHelper(RecyclerView listaNotas) {
         ItemTouchHelper itemTouchHelper =
-                new ItemTouchHelper(new NotaItemTouchHelperCallback(adapter));
+                new ItemTouchHelper(new NotaItemTouchHelperCallback(adapter, connectionDatabase));
         itemTouchHelper.attachToRecyclerView(listaNotas);
     }
 
     private void configuraAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
         adapter = new ListaNotasAdapter(this, todasNotas);
         listaNotas.setAdapter(adapter);
-        adapter.setOnItemNotaClickListener(new ListaNotasAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Nota nota, int posicao) {
-                vaiParaFormularioNotaActivityAltera(nota, posicao);
-            }
-        });
+        adapter.setOnItemNotaClickListener((nota, posicao) ->
+                vaiParaFormularioNotaActivityAltera(nota, posicao));
     }
 
     private void vaiParaFormularioNotaActivityAltera(Nota nota, int posicao) {

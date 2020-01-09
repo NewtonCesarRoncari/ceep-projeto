@@ -2,8 +2,9 @@ package br.com.alura.ceep.ui.recyclerview.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,15 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         notifyDataSetChanged();
     }
 
-    public void remove(int posicao) {
+    public Nota remove(int posicao) {
+        Nota nota = notas.get(posicao);
         notas.remove(posicao);
         notifyItemRemoved(posicao);
+        return nota;
+    }
+
+    public Nota retornaNotaPorPosicao(int posicao) {
+        return notas.get(posicao);
     }
 
     public void troca(int posicaoInicial, int posicaoFinal) {
@@ -62,13 +69,18 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         notifyItemMoved(posicaoInicial, posicaoFinal);
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(Nota nota, int posicao);
+    public Nota adicionaPosicaoNota(Nota nota) {
+        nota.setPosicaoAdapter(notas.size());
+        return nota;
     }
 
-    public void adiciona(Nota nota) {
-        notas.add(nota);
-        notifyDataSetChanged();
+    public void insere(Nota nota) {
+        notas.add(0, nota);
+        notifyItemInserted(0);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Nota nota, int posicao);
     }
 
     class NotaViewHolder extends RecyclerView.ViewHolder {
@@ -78,20 +90,16 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         private CardView cardView;
         private Nota nota;
 
-        public NotaViewHolder(View itemView) {
+        NotaViewHolder(View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.item_nota_titulo);
             descricao = itemView.findViewById(R.id.item_nota_descricao);
             cardView = itemView.findViewById(R.id.cardView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClickListener.onItemClick(nota, getAdapterPosition());
-                }
-            });
+            itemView.setOnClickListener(view ->
+                    onItemClickListener.onItemClick(nota, getAdapterPosition()));
         }
 
-        public void vincula(Nota nota) {
+        void vincula(Nota nota) {
             this.nota = nota;
             preencheCampo(nota);
         }

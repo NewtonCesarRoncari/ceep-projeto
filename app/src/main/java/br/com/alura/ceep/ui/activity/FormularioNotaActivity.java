@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class FormularioNotaActivity extends AppCompatActivity {
     private TextView descricao;
     private ConstraintLayout formularioLayout;
     private String corNota = Cores.BRANCO.getValor();
+    private Nota notaRecebida;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class FormularioNotaActivity extends AppCompatActivity {
         Intent dadosRecebidos = getIntent();
         if (dadosRecebidos.hasExtra(CHAVE_NOTA)) {
             setTitle(TITULO_APPBAR_ALTERA);
-            Nota notaRecebida = (Nota) dadosRecebidos
+            this.notaRecebida = (Nota) dadosRecebidos
                     .getSerializableExtra(CHAVE_NOTA);
             posicaoRecibida = dadosRecebidos.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
             preencheCampos(notaRecebida);
@@ -92,9 +94,19 @@ public class FormularioNotaActivity extends AppCompatActivity {
 
     @NonNull
     private Nota criaNota() {
-        return new Nota(titulo.getText().toString(),
-                descricao.getText().toString(),
-                this.corNota);
+        if (!ehNotaASerEditada()) {
+            return new Nota(notaRecebida.getId(), titulo.getText().toString(),
+                    descricao.getText().toString(),
+                    this.corNota, notaRecebida.getPosicaoAdapter());
+        } else {
+            return new Nota(null, titulo.getText().toString(),
+                    descricao.getText().toString(),
+                    this.corNota, 0);
+        }
+    }
+
+    private boolean ehNotaASerEditada() {
+        return notaRecebida == null;
     }
 
     private boolean ehMenuSalvaNota(MenuItem item) {
@@ -104,12 +116,9 @@ public class FormularioNotaActivity extends AppCompatActivity {
     private void configuraAdapter(RecyclerView listaCores) {
         CoresAdapter adapter = new CoresAdapter(this);
         listaCores.setAdapter(adapter);
-        adapter.setOnItemNotaClickListener(new CoresAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(String cor) {
-                formularioLayout.setBackgroundColor(Color.parseColor(cor));
-                corNota = cor;
-            }
+        adapter.setOnItemNotaClickListener(cor -> {
+            formularioLayout.setBackgroundColor(Color.parseColor(cor));
+            corNota = cor;
         });
     }
 

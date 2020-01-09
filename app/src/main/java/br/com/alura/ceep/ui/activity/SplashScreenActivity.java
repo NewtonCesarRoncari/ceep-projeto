@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import br.com.alura.ceep.R;
-import br.com.alura.ceep.ui.activity.viewModel.SplashScreenViewModel;
+import br.com.alura.ceep.repository.SharedPreferencesRepository;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -16,7 +17,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     public static final String PREFERENCIA_PRIMEIRA_VEZ = "primeira_vez";
     private int delay = 2000;
     private SharedPreferences preferences;
-    private SplashScreenViewModel viewModel = new SplashScreenViewModel();
+    private SharedPreferencesRepository preference =
+            new SharedPreferencesRepository();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,8 +32,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void verificaAppAbertoPrimeiraVez() {
-        if (!viewModel.verificaPreferencia(preferences, PREFERENCIA_PRIMEIRA_VEZ)) {
-            viewModel.adicionarPreferenceSplashScreen(preferences, PREFERENCIA_PRIMEIRA_VEZ);
+        if (!preference.verificaPreferencia(preferences, PREFERENCIA_PRIMEIRA_VEZ)) {
+            preference.adicionarPreference(preferences, PREFERENCIA_PRIMEIRA_VEZ);
         } else {
             this.delay = 500;
         }

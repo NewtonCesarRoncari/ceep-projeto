@@ -1,17 +1,22 @@
 package br.com.alura.ceep.ui.recyclerview.helper.callback;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 
-import br.com.alura.ceep.dao.NotaDAO;
+import br.com.alura.ceep.database.ConnectionDatabase;
+import br.com.alura.ceep.model.Nota;
+import br.com.alura.ceep.repository.NotaRepository;
 import br.com.alura.ceep.ui.recyclerview.adapter.ListaNotasAdapter;
 
 public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final ListaNotasAdapter adapter;
+    private final ConnectionDatabase connectionDatabase;
 
-    public NotaItemTouchHelperCallback(ListaNotasAdapter adapter) {
+    public NotaItemTouchHelperCallback(ListaNotasAdapter adapter,
+                                       ConnectionDatabase connectionDatabase) {
         this.adapter = adapter;
+        this.connectionDatabase = connectionDatabase;
     }
 
     @Override
@@ -26,13 +31,11 @@ public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         int posicaoInicial = viewHolder.getAdapterPosition();
         int posicaoFinal = target.getAdapterPosition();
-        trocaNotas(posicaoInicial, posicaoFinal);
-        return true;
-    }
-
-    private void trocaNotas(int posicaoInicial, int posicaoFinal) {
-        new NotaDAO().troca(posicaoInicial, posicaoFinal);
+        Nota notaPosicaoInicial = adapter.retornaNotaPorPosicao(posicaoInicial);
+        Nota notaPosicaoFinal = adapter.retornaNotaPorPosicao(posicaoFinal);
+        new NotaRepository(connectionDatabase).troca(notaPosicaoInicial, notaPosicaoFinal);
         adapter.troca(posicaoInicial, posicaoFinal);
+        return true;
     }
 
     @Override
@@ -41,8 +44,7 @@ public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
         removeNota(posicaoDaNotaDeslizada);
     }
 
-    private void removeNota(int posicao) {
-        new NotaDAO().remove(posicao);
-        adapter.remove(posicao);
+    private void removeNota(int posicaoDaNotaDeslizada) {
+        new NotaRepository(connectionDatabase).remove(adapter.remove(posicaoDaNotaDeslizada));
     }
 }
