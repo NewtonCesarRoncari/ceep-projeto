@@ -13,7 +13,7 @@
             android:id="@+id/formulario_feed_back_banner"
             android:layout_width="0dp"
             android:layout_height="150dp"
-            android:contentDescription="Feedback Banner"
+            android:contentDescription="@string/feedback_banner"
             android:scaleType="centerCrop"
             android:src="@drawable/feedback_banner"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +31,7 @@
             android:layout_marginBottom="8dp"
             android:background="@android:drawable/screen_background_dark_transparent"
             android:padding="8dp"
-            android:text="Deixe o seu feedback! :)"
+            android:text="@string/deixe_o_seu_feedback"
             android:textColor="@color/branco"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -44,6 +44,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/formulario_feedback_email_inputlayout"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -62,13 +63,14 @@
                 android:id="@+id/formulario_feedback_email_editext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="E-mail"
+                android:hint="@string/e_mail"
                 android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/formulario_feedback_mensagem_feedback_inputlayout"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -83,7 +85,7 @@
                 android:id="@+id/formulario_feedback_mensagem_feedback_editext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Escreva seu feedback" />
+                android:hint="@string/escreva_seu_feedback" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:padding="8dp"
-            android:text="Envie dúvidas ou sugestão sobresua experiência com o Ceep. Usamos as informações fornecidas para aprimorar a experiência da App"
+            android:text="@string/mensagem_feedback_formulario"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/formulario_feedback_mensagem_feedback_inputlayout"

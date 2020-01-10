@@ -36,7 +36,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/item_nota_titulo"
             app:layout_constraintTop_toBottomOf="@id/item_nota_titulo"
-            tools:text="Descrição" />
+            tools:text="@string/descricao" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

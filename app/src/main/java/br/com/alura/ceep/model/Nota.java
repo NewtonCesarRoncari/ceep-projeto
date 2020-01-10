@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
 @Entity
-public class Nota implements Serializable{
+public class Nota implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private Long id;

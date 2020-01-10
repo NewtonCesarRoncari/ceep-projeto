@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alura.ceep.R;
@@ -45,8 +46,8 @@ public class ListaNotasActivity extends AppCompatActivity {
     private SharedPreferencesRepository preference = new SharedPreferencesRepository();
     private SharedPreferences preferences;
     private ConnectionDatabase connectionDatabase;
-    private NotaRepository repository;
     private ListaNotasViewModel viewModel;
+    private List<Nota> todasNotas = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +57,10 @@ public class ListaNotasActivity extends AppCompatActivity {
         setTitle(TITULO_APPBAR);
 
         this.connectionDatabase = (ConnectionDatabase) ConnectionDatabase.getInstance(this);
-        this.repository = new NotaRepository(connectionDatabase);
+        this.preferences = getSharedPreferences(NOME_PREFERENCIA, MODE_PRIVATE);
 
         configuraInstanciaViewModel();
-
-        this.preferences = getSharedPreferences(NOME_PREFERENCIA, MODE_PRIVATE);
-        List<Nota> todasNotas = pegaTodasNotas();
+        pegaTodasNotas();
         configuraRecyclerView(todasNotas);
         configuraBotaoInsereNota();
     }
@@ -85,7 +84,7 @@ public class ListaNotasActivity extends AppCompatActivity {
         final MenuItem itemLinear = menu.findItem(R.id.menu_lista_notas_layout_ic_linear);
         final MenuItem itemFeedback = menu.findItem(R.id.menu_lista_notas_feedback_formulario);
 
-        if (preferences.contains(PREFERENCIA_GRID_LAYOUT)) {
+        if (preference.verificaPreferenciaSalva(preferences, PREFERENCIA_GRID_LAYOUT)) {
             configuraGridLayout(itemGrid, itemLinear);
         } else {
             configuraLinearLayout(itemGrid, itemLinear);
@@ -144,8 +143,9 @@ public class ListaNotasActivity extends AppCompatActivity {
         startActivity(vaiParaFormularioFeedback);
     }
 
-    private List<Nota> pegaTodasNotas() {
-        return repository.todos();
+    private void pegaTodasNotas() {
+        viewModel.todos().observe(this, notasRetornadas ->
+                this.todasNotas.addAll(notasRetornadas));
     }
 
     @Override
@@ -226,8 +226,7 @@ public class ListaNotasActivity extends AppCompatActivity {
     private void configuraAdapter(List<Nota> todasNotas, RecyclerView listaNotas) {
         adapter = new ListaNotasAdapter(this, todasNotas);
         listaNotas.setAdapter(adapter);
-        adapter.setOnItemNotaClickListener((nota, posicao) ->
-                vaiParaFormularioNotaActivityAltera(nota, posicao));
+        adapter.setOnItemNotaClickListener(this::vaiParaFormularioNotaActivityAltera);
     }
 
     private void vaiParaFormularioNotaActivityAltera(Nota nota, int posicao) {

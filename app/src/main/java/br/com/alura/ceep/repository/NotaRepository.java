@@ -19,9 +19,9 @@ public class NotaRepository {
         this.dao = connectionDatabase.getNotaDAO();
     }
 
-    public List<Nota> todos() {
-        List<Nota> notas = new ArrayList<>();
-        new BaseAsyncTask<>(dao::todos, notas::addAll).execute();
+    public LiveData<List<Nota>> todos() {
+        MutableLiveData<List<Nota>> notas = new MutableLiveData<>();
+        new BaseAsyncTask<>(dao::todos, notas::setValue).execute();
         return notas;
     }
 
@@ -39,12 +39,12 @@ public class NotaRepository {
             return null;
         }, resultado -> {
         }).execute();
-        return buscaUltimaNota();
+        return buscaUltimaNotaSalva();
     }
 
-    private LiveData<Nota> buscaUltimaNota() {
+    private LiveData<Nota> buscaUltimaNotaSalva() {
         MutableLiveData<Nota> notaSalva = new MutableLiveData<>();
-        new BaseAsyncTask<>(this.dao::buscaUltimaNota, notaSalva::setValue).execute();
+        new BaseAsyncTask<>(this.dao::buscaUltimaNotaSalva, notaSalva::setValue).execute();
         return notaSalva;
     }
 
@@ -57,8 +57,9 @@ public class NotaRepository {
     }
 
     public void troca(Nota notaPosicaoInicial, Nota notaPosicaoFinal) {
+        int posicaoDaNotaInicial = notaPosicaoInicial.getPosicaoAdapter();
         notaPosicaoInicial.setPosicaoAdapter(notaPosicaoFinal.getPosicaoAdapter());
-        notaPosicaoFinal.setPosicaoAdapter(notaPosicaoInicial.getPosicaoAdapter());
+        notaPosicaoFinal.setPosicaoAdapter(posicaoDaNotaInicial);
         altera(notaPosicaoInicial);
         altera(notaPosicaoFinal);
     }

@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:contentDescription="Logo"
+        android:contentDescription="@string/logo"
         android:src="@drawable/ceep_logo_branco"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

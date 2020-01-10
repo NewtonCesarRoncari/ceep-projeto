@@ -29,13 +29,16 @@ public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        int posicaoInicial = viewHolder.getAdapterPosition();
-        int posicaoFinal = target.getAdapterPosition();
-        Nota notaPosicaoInicial = adapter.retornaNotaPorPosicao(posicaoInicial);
-        Nota notaPosicaoFinal = adapter.retornaNotaPorPosicao(posicaoFinal);
-        new NotaRepository(connectionDatabase).troca(notaPosicaoInicial, notaPosicaoFinal);
-        adapter.troca(posicaoInicial, posicaoFinal);
+        Nota notaPosicaoInicial = adapter.retornaNotaPorPosicao(viewHolder.getAdapterPosition());
+        Nota notaPosicaoFinal = adapter.retornaNotaPorPosicao(target.getAdapterPosition());
+
+        trocaNoBanco(notaPosicaoInicial, notaPosicaoFinal);
+        adapter.troca(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
+    }
+
+    private void trocaNoBanco(Nota notaPosicaoInicial, Nota notaPosicaoFinal) {
+        new NotaRepository(connectionDatabase).troca(notaPosicaoInicial, notaPosicaoFinal);
     }
 
     @Override

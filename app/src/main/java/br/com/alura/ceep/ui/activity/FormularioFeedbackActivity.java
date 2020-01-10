@@ -12,8 +12,7 @@ import br.com.alura.ceep.R;
 
 public class FormularioFeedbackActivity extends AppCompatActivity {
 
-    public static final String TITULO_APPBAR = "FeedBack";
-
+    public static final String TITULO_APPBAR = "Feedback";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

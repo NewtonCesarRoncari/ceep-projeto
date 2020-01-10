@@ -19,7 +19,7 @@ public class SharedPreferencesRepository {
         editor.apply();
     }
 
-    public Boolean verificaPreferencia(SharedPreferences preferences, String chavePreferencia) {
+    public Boolean verificaPreferenciaSalva(SharedPreferences preferences, String chavePreferencia) {
         return preferences.contains(chavePreferencia);
     }
 }

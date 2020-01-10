@@ -32,7 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void verificaAppAbertoPrimeiraVez() {
-        if (!preference.verificaPreferencia(preferences, PREFERENCIA_PRIMEIRA_VEZ)) {
+        if (!preference.verificaPreferenciaSalva(preferences, PREFERENCIA_PRIMEIRA_VEZ)) {
             preference.adicionarPreference(preferences, PREFERENCIA_PRIMEIRA_VEZ);
         } else {
             this.delay = 500;
@@ -41,7 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void configuraTempoSplasScreen(int tempoDaSplashScreen) {
         Handler handler = new Handler();
-        handler.postDelayed(() -> vaiParaListaNotasActivity(), tempoDaSplashScreen);
+        handler.postDelayed(this::vaiParaListaNotasActivity, tempoDaSplashScreen);
     }
 
     private void vaiParaListaNotasActivity() {

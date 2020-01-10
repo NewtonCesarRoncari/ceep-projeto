@@ -3,7 +3,6 @@ package br.com.alura.ceep.ui.activity;
 public interface NotaActivityConstantes {
 
     String CHAVE_NOTA = "nota";
-    String CHAVE_COR_NOTA = "cor_da_nota";
     int CODIGO_REQUISICAO_INSERE_NOTA = 1;
     int CODIGO_REQUISICAO_ALTERA_NOTA = 2;
     int POSICAO_INVALIDA = -1;

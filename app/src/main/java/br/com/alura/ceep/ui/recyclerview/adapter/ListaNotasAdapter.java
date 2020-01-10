@@ -2,13 +2,13 @@ package br.com.alura.ceep.ui.recyclerview.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +48,12 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         return notas.size();
     }
 
+
+    public void insere(Nota nota) {
+        notas.add(0, nota);
+        notifyItemInserted(0);
+    }
+
     public void altera(int posicao, Nota nota) {
         notas.set(posicao, nota);
         notifyDataSetChanged();
@@ -57,7 +63,19 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         Nota nota = notas.get(posicao);
         notas.remove(posicao);
         notifyItemRemoved(posicao);
+
+        diminuiPosicaoAdapterDasNotasPosteriores(nota);
         return nota;
+    }
+
+    private void diminuiPosicaoAdapterDasNotasPosteriores(Nota nota) {
+        for (Nota notaASerDiminuidaPosicaoAdapter : notas) {
+
+            if (notaASerDiminuidaPosicaoAdapter.getPosicaoAdapter() > nota.getPosicaoAdapter()) {
+                notaASerDiminuidaPosicaoAdapter.setPosicaoAdapter(
+                        notaASerDiminuidaPosicaoAdapter.getPosicaoAdapter() - 1);
+            }
+        }
     }
 
     public Nota retornaNotaPorPosicao(int posicao) {
@@ -72,11 +90,6 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
     public Nota adicionaPosicaoNota(Nota nota) {
         nota.setPosicaoAdapter(notas.size());
         return nota;
-    }
-
-    public void insere(Nota nota) {
-        notas.add(0, nota);
-        notifyItemInserted(0);
     }
 
     public interface OnItemClickListener {

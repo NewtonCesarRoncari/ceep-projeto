@@ -71,12 +71,8 @@ public class CoresAdapter extends RecyclerView.Adapter<CoresAdapter.CorViewHolde
         CorViewHolder(View itemView) {
             super(itemView);
             viewCor = itemView.findViewById(R.id.view_cor);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClickListener.onItemClick(cores.get(getAdapterPosition()));
-                }
-            });
+            itemView.setOnClickListener(view ->
+                    onItemClickListener.onItemClick(cores.get(getAdapterPosition())));
         }
 
         void vincula(String cor) {
