@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,23 +60,24 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
         notifyDataSetChanged();
     }
 
-    public Nota remove(int posicao) {
-        Nota nota = notas.get(posicao);
+    public void remove(int posicao) {
         notas.remove(posicao);
         notifyItemRemoved(posicao);
 
-        diminuiPosicaoAdapterDasNotasPosteriores(nota);
-        return nota;
     }
 
-    private void diminuiPosicaoAdapterDasNotasPosteriores(Nota nota) {
+    public List<Nota> diminuiPosicaoAdapterDasNotasPosteriores(Nota nota) {
+        List<Nota> notasPosicoesMudadas = new ArrayList<>();
         for (Nota notaASerDiminuidaPosicaoAdapter : notas) {
 
             if (notaASerDiminuidaPosicaoAdapter.getPosicaoAdapter() > nota.getPosicaoAdapter()) {
                 notaASerDiminuidaPosicaoAdapter.setPosicaoAdapter(
                         notaASerDiminuidaPosicaoAdapter.getPosicaoAdapter() - 1);
+
+                notasPosicoesMudadas.add(notaASerDiminuidaPosicaoAdapter);
             }
         }
+        return notasPosicoesMudadas;
     }
 
     public Nota retornaNotaPorPosicao(int posicao) {

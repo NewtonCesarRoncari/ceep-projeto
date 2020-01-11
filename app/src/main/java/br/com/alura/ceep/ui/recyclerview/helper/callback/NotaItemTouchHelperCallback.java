@@ -1,7 +1,9 @@
 package br.com.alura.ceep.ui.recyclerview.helper.callback;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import br.com.alura.ceep.database.ConnectionDatabase;
 import br.com.alura.ceep.model.Nota;
@@ -48,6 +50,16 @@ public class NotaItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
     private void removeNota(int posicaoDaNotaDeslizada) {
-        new NotaRepository(connectionDatabase).remove(adapter.remove(posicaoDaNotaDeslizada));
+        Nota notaRemovida = adapter.retornaNotaPorPosicao(posicaoDaNotaDeslizada);
+        new NotaRepository(connectionDatabase).remove(notaRemovida);
+        diminuiPosicaoDasNotasPosteriores(notaRemovida);
+        adapter.remove(posicaoDaNotaDeslizada);
+    }
+
+    private void diminuiPosicaoDasNotasPosteriores(Nota notaRemovida) {
+        List<Nota> notasMudadas = adapter.diminuiPosicaoAdapterDasNotasPosteriores(notaRemovida);
+        for (Nota nota : notasMudadas) {
+            new NotaRepository(connectionDatabase).altera(nota);
+        }
     }
 }
